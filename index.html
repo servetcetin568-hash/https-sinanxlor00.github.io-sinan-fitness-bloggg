@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sinan Fitness Blog</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#111;
+color:white;
+}
+
+.navbar{
+background:black;
+padding:15px;
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.navbar button{
+padding:10px 20px;
+border:none;
+background:#ff9800;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.page{
+display:none;
+padding:40px;
+}
+
+.active{
+display:block;
+}
+
+.card{
+background:#1e1e1e;
+padding:20px;
+border-radius:10px;
+margin:20px 0;
+}
+
+input,textarea{
+padding:10px;
+border:none;
+border-radius:6px;
+margin:5px;
+}
+
+.btn{
+padding:8px 15px;
+border:none;
+background:#ff9800;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.comment{
+background:#1e1e1e;
+padding:15px;
+margin-top:10px;
+border-radius:8px;
+}
+
+.admin{
+background:#333;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- MENÜ -->
+
+<div class="navbar">
+
+<button onclick="openPage('home')">Ana Sayfa</button>
+<button onclick="openPage('program')">Fitness Programı</button>
+<button onclick="openPage('bmi')">BMI</button>
+<button onclick="openPage('films')">Filmler</button>
+<button onclick="openPage('comments')">Yorumlar</button>
+<button onclick="openPage('boykot')">Boykot Kontrol</button>
+
+</div>
+
+<!-- ANA SAYFA -->
+
+<div id="home" class="page active">
+
+<h1>Sinan Fitness Blog</h1>
+
+<div class="card">
+
+<h2>Motivasyon</h2>
+
+<p>"Disiplin güçlü bir vücut ve karakterin temelidir."</p>
+
+</div>
+
+</div>
+
+<!-- PROGRAM -->
+
+<div id="program" class="page">
+
+<h2>Fitness Programı</h2>
+
+<div class="card">
+
+<h3>1.Gün – Sırt</h3>
+
+<ul>
+<li>Lat Pulldown – 5x8</li>
+<li>Seated Row – 4x10</li>
+<li>Biceps Curl – 4x12</li>
+</ul>
+
+<h3>2.Gün – Göğüs</h3>
+
+<ul>
+<li>Bench Press – 5x8</li>
+<li>Cable Crossover – 4x12</li>
+<li>Triceps Pushdown – 4x12</li>
+</ul>
+
+<h3>3.Gün – Omuz</h3>
+
+<ul>
+<li>Shoulder Press – 5x8</li>
+<li>Lateral Raise – 4x12</li>
+<li>Face Pull – 3x15</li>
+</ul>
+
+</div>
+
+</div>
+
+<!-- BMI -->
+
+<div id="bmi" class="page">
+
+<h2>BMI Hesaplama</h2>
+
+<div class="card">
+
+<input id="kilo" placeholder="Kilo (kg)">
+<input id="boy" placeholder="Boy (cm)">
+
+<br><br>
+
+<button class="btn" onclick="bmi()">Hesapla</button>
+
+<p id="bmiSonuc"></p>
+
+</div>
+
+</div>
+
+<!-- FİLMLER -->
+
+<div id="films" class="page">
+
+<h2>Sevdiğim Filmler</h2>
+
+<div class="card">Rambo</div>
+<div class="card">Avengement</div>
+<div class="card">Close Range</div>
+
+</div>
+
+<!-- YORUMLAR -->
+
+<div id="comments" class="page">
+
+<h2>Ziyaretçi Yorumları</h2>
+
+<div class="card">
+
+<input id="isim" placeholder="Adınız">
+<br>
+<textarea id="yorum" placeholder="Yorum yaz"></textarea>
+<br>
+
+<button class="btn" onclick="yorumEkle()">Yorum Gönder</button>
+
+</div>
+
+<h3>Yorum Listesi</h3>
+
+<div id="yorumlar"></div>
+
+<div class="admin">
+
+<h3>Admin Giriş</h3>
+
+<input id="adminUser" placeholder="Kullanıcı">
+<input id="adminPass" type="password" placeholder="Şifre">
+
+<button class="btn" onclick="adminLogin()">Giriş</button>
+
+<p id="adminStatus"></p>
+
+</div>
+
+</div>
+
+<!-- BOYKOT -->
+
+<div id="boykot" class="page">
+
+<h2>Boykot Marka Kontrol</h2>
+
+<div class="card">
+
+<input id="urunAra" placeholder="Marka yaz">
+
+<button class="btn" onclick="boykotAra()">Kontrol</button>
+
+<p id="boykotSonuc"></p>
+
+</div>
+
+<div class="card">
+
+<h3>Admin Marka Ekle</h3>
+
+<input id="yeniMarka" placeholder="Yeni marka">
+
+<button class="btn" onclick="markaEkle()">Ekle</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* SAYFA SİSTEMİ */
+
+function openPage(page){
+
+let pages=document.querySelectorAll(".page");
+
+pages.forEach(p=>p.classList.remove("active"));
+
+document.getElementById(page).classList.add("active");
+
+}
+
+/* BMI */
+
+function bmi(){
+
+let kilo=document.getElementById("kilo").value;
+
+let boy=document.getElementById("boy").value/100;
+
+let sonuc=kilo/(boy*boy);
+
+let durum="";
+
+if(sonuc<18.5) durum="Zayıf";
+else if(sonuc<25) durum="Normal";
+else if(sonuc<30) durum="Fazla Kilolu";
+else if(sonuc<35) durum="Obez (1)";
+else if(sonuc<40) durum="Obez (2)";
+else durum="Morbid Obez";
+
+document.getElementById("bmiSonuc").innerHTML="BMI: "+sonuc.toFixed(2)+" - "+durum;
+
+}
+
+/* YORUM */
+
+function yorumEkle(){
+
+let isim=document.getElementById("isim").value;
+
+let yorum=document.getElementById("yorum").value;
+
+if(isim==""||yorum==""){alert("Yorum yaz");return;}
+
+let yorumlar=JSON.parse(localStorage.getItem("yorumlar")||"[]");
+
+yorumlar.unshift({isim,yorum});
+
+localStorage.setItem("yorumlar",JSON.stringify(yorumlar));
+
+yorumGoster();
+
+}
+
+function yorumGoster(){
+
+let liste=document.getElementById("yorumlar");
+
+let yorumlar=JSON.parse(localStorage.getItem("yorumlar")||"[]");
+
+liste.innerHTML="";
+
+yorumlar.forEach((y,i)=>{
+
+let div=document.createElement("div");
+
+div.className="comment";
+
+div.innerHTML="<b>"+y.isim+"</b><br>"+y.yorum;
+
+if(adminLogged){
+
+let sil=document.createElement("button");
+
+sil.innerText="Sil";
+
+sil.className="btn";
+
+sil.onclick=function(){yorumSil(i)};
+
+div.appendChild(document.createElement("br"));
+div.appendChild(sil);
+
+}
+
+liste.appendChild(div);
+
+});
+
+}
+
+function yorumSil(i){
+
+let yorumlar=JSON.parse(localStorage.getItem("yorumlar"));
+
+yorumlar.splice(i,1);
+
+localStorage.setItem("yorumlar",JSON.stringify(yorumlar));
+
+yorumGoster();
+
+}
+
+/* ADMIN */
+
+let adminLogged=false;
+
+function adminLogin(){
+
+let u=document.getElementById("adminUser").value;
+
+let p=document.getElementById("adminPass").value;
+
+if(u=="admin"&&p=="1234"){
+
+adminLogged=true;
+
+document.getElementById("adminStatus").innerText="Admin giriş başarılı";
+
+yorumGoster();
+
+}else{
+
+document.getElementById("adminStatus").innerText="Hatalı giriş";
+
+}
+
+}
+
+/* BOYKOT */
+
+let boykotMarkalar=["coca cola","pepsi","nestle","starbucks","mcdonalds","burger king","kfc","nike","adidas","intel","hp","apple","amazon","google","facebook","instagram","whatsapp","youtube","disney","netflix","visa","mastercard","paypal","loreal","garnier","maybelline","colgate","gillette","zara","h&m","puma"];
+
+function boykotAra(){
+
+let urun=document.getElementById("urunAra").value.toLowerCase();
+
+if(boykotMarkalar.includes(urun)){
+
+document.getElementById("boykotSonuc").innerHTML="❌ Boykot listesinde";
+
+}else{
+
+document.getElementById("boykotSonuc").innerHTML="✅ Listede bulunamadı";
+
+}
+
+}
+
+function markaEkle(){
+
+if(!adminLogged){alert("Admin gerekli");return;}
+
+let marka=document.getElementById("yeniMarka").value.toLowerCase();
+
+boykotMarkalar.push(marka);
+
+alert("Marka eklendi");
+
+}
+
+yorumGoster();
+
+</script>
+
+</body>
+</html>
